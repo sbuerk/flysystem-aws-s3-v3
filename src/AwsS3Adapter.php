@@ -220,7 +220,11 @@ class AwsS3Adapter extends AbstractAdapter implements CanOverwriteFiles
           $ret = FALSE;
           foreach($parts AS $part) {
             $tmp .= '/' .$part;
-            if (!$this->doesDirectoryExist($tmp . '/')) {
+            try {
+              if (!$this->doesDirectoryExist($tmp . '/')) {
+                $ret = $this->upload($tmp . '/', '', $config);
+              }
+            } catch(\Exception $exception) {
               $ret = $this->upload($tmp . '/', '', $config);
             }
           }
