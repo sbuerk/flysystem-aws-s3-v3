@@ -213,6 +213,20 @@ class AwsS3Adapter extends AbstractAdapter implements CanOverwriteFiles
      */
     public function createDir($dirname, Config $config)
     {
+      
+        $parts  = explode('/', trim($dirname, '/'));
+        if (count($parts) > 1) {
+          $tmp = '';
+          $ret = FALSE;
+          foreach($parts AS $part) {
+            $tmp .= '/' .$part;
+            if (!$this->doesDirectoryExist($tmp . '/')) {
+              $ret = $this->upload($tmp . '/', '', $config);
+            }
+          }
+          return $ret;
+        }
+
         return $this->upload($dirname . '/', '', $config);
     }
 
